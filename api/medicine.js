@@ -10,13 +10,13 @@ export default async function handler(req, res) {
   try {
     const response = await axios.post(
       "https://api.osudpotro.com/api/v1/home/search_sql",
-      { needle: key, page: parseInt(page), limit: parseInt(limit) },
+      { needle: key, page: Number(page), limit: Number(limit) },
       { headers: { "Content-Type": "application/json" } }
     );
 
-    const data = response.data?.data?.item_data || [];
+    const items = response.data?.data?.item_data || [];
 
-    const results = data.map((item) => ({
+    const results = items.map((item) => ({
       name: item.item_name,
       type: item.sku_type,
       price: item.sell_price,
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
 
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(200).json(results);
-  } catch (error) {
-    console.error("❌ Error fetching data:", error.message);
+  } catch (err) {
+    console.error(err.message);
     res.status(500).json({ error: "Failed to fetch data" });
   }
 }

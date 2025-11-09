@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
-  const { key } = req.query;
+  const { key, page = 0, limit = 20 } = req.query;
 
   if (!key) {
     return res.status(400).json({ error: "Missing ?key= parameter" });
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   try {
     const response = await axios.post(
       "https://api.osudpotro.com/api/v1/home/search_sql",
-      { needle: key, page: 0, limit: 20 },
+      { needle: key, page: parseInt(page), limit: parseInt(limit) },
       { headers: { "Content-Type": "application/json" } }
     );
 
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(200).json(results);
   } catch (error) {
-    console.error("Error fetching data:", error.message);
+    console.error("❌ Error fetching data:", error.message);
     res.status(500).json({ error: "Failed to fetch data" });
   }
 }
